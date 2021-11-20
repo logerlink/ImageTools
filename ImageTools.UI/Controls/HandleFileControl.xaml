@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="ImageTools.UI.Controls.HandleFileControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImageTools.UI.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Name="SP_Handle">
+            <Button Width="150" Height="30" Margin="50 0" Background="#339dff" Foreground="#FFF"  Content="{Binding HandleText}" PreviewMouseDown="Btn_HandleFile_PreviewMouseDown"></Button>
+            <Button Width="150" Height="30" Content="清空结果" Background="#ebebeb" Click="Btn_RemoveResult_Click"></Button>
+        </StackPanel>
+        <ProgressBar Grid.Row="1" IsIndeterminate="True" Height="2" Visibility="Hidden"></ProgressBar>
+        <ListBox BorderThickness="0" Grid.Row="2" MaxHeight="200" ItemsSource="{Binding FileResultList}" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding FilePath}" VerticalAlignment="Center" FontSize="14"></TextBlock>
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="12" Text="{Binding Size}"  Margin="10 0"></TextBlock>
+                        <Button Grid.Column="2" Width="50" Background="#eee" Content="打开" Click="Btn_Open_Click" Tag="{Binding FilePath}"></Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBox Grid.Row="3" BorderThickness="0 1 0 0" Margin="0 10 0 0" Padding="0 10 0 0" VerticalContentAlignment="Top" MinHeight="200" IsReadOnly="True" VerticalAlignment="Top" FontSize="14"  Text="{Binding Message}" VerticalScrollBarVisibility="Auto"></TextBox>
+    </Grid>
+</UserControl>

@@ -1,0 +1,8 @@
+bin
+obj
+.vs
+
+*.suo
+*.user
+
+packages

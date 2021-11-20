@@ -1,0 +1,428 @@
+﻿<Window x:Class="ImageTools.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageTools.UI" xmlns:controls="clr-namespace:ImageTools.UI.Controls" xmlns:helper="clr-namespace:ImageTools.UI.Helper"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="1080">
+    <Window.Resources>
+        <helper:BoolTrueVisibleConverter x:Key="boolTrueVisibleConverter"></helper:BoolTrueVisibleConverter>
+    </Window.Resources>
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontSize" Value="18"></Setter>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="FontSize" Value="14"></Setter>
+                <Setter Property="Height" Value="25"></Setter>
+                <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+            </Style>
+            <Style TargetType="StackPanel">
+                <Setter Property="Margin" Value="0 10"></Setter>
+            </Style>
+            <Style TargetType="TabItem">
+                <Setter Property="FontSize" Value="16"></Setter>
+                <Setter Property="Padding" Value="8"></Setter>
+            </Style>
+        </Grid.Resources>
+        <TabControl SelectionChanged="TabControl_SelectionChanged" Name="TC_ImageTool">
+            <TabItem Header="压缩图片" Name="CompressImg" >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="不支持Gif类型图片" x:Name="DF_CompressImg"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="压缩质量" ToolTip="数值越高，画质越好"></TextBlock>
+                            <TextBox Text="{Binding Quality,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="期望大小" ToolTip="仅作参考，会尽可能压缩"></TextBlock>
+                            <TextBox Text="{Binding ExpectSize,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock>KB</TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_CompressImg" Text="{Binding OutPath,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="3" HandleText="压缩图片" Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="压缩GIF" Name="CompressGif">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="仅支持Gif类型图片" x:Name="DF_CompressGif"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="压缩质量" ToolTip="0-200之间，默认：120。数值越高，画质越差。"></TextBlock>
+                            <TextBox Text="{Binding Lossy,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="图像收缩" ToolTip="0-1之间，默认：0.6。数值小，图像越小"></TextBlock>
+                            <TextBox Text="{Binding Scale,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="压缩类型" ToolTip="gifsicle压缩类型，默认O2。支持：O1、O2、O3，依次时间越长、压缩效果越好"></TextBlock>
+                            <TextBox Text="{Binding Optimize,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="抽帧步长" ToolTip="每隔xx帧,删掉一帧。默认：10，不建议抽帧，对大小影响不大，不抽帧：-1"></TextBlock>
+                            <TextBox Text="{Binding Gap,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_CompressGif" Text="{Binding OutPath,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="4" HandleText="压缩GIF图片" Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="缩略图-图片" Name="ResizeImg">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="不支持Gif类型图片" x:Name="DF_ResizeImg"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="压缩质量" ToolTip="0-100之间，默认：90。数值越低，画质越差。"></TextBlock>
+                            <TextBox Text="{Binding Quality,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="收缩倍数" ToolTip="默认：2，即缩小一倍。数值大，图像越小"></TextBlock>
+                            <TextBox Text="{Binding Scale,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_ResizeImg" Text="{Binding OutPath,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="4" HandleText="生成缩略图" Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="缩略图-GIF" Name="ResizeGif">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="仅支持Gif类型图片" x:Name="DF_ResizeGif"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="收缩倍数" ToolTip="默认：2，即缩小一倍。数值大，图像越小"></TextBlock>
+                            <TextBox Text="{Binding Scale,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_ResizeGif" Text="{Binding OutPath}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="2" HandleText="生成缩略图" Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="文字水印-图片" Name="WaterMarkTextToImg">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="不支持Gif类型图片" x:Name="DF_WaterMarkTextToImg"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="水印文字"></TextBlock>
+                            <TextBox Text="{Binding Text,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="字体倾斜" ToolTip="默认：-45。"></TextBlock>
+                            <TextBox Text="{Binding Rotate,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="字体颜色" ToolTip="默认黑色。支持颜色名称和16进制#xxxxxx，不支持rgb"></TextBlock>
+                            <TextBox Text="{Binding FontColor,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="字体大小" ToolTip="默认：16。数值大，字体越大"></TextBlock>
+                            <TextBox Text="{Binding FontSize,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Text="是否全屏" ToolTip="默认：否" ></TextBlock>
+                            <CheckBox IsChecked="{Binding IsFull,Mode=TwoWay}" VerticalAlignment="Center" Margin="20 0"></CheckBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Visibility="{Binding IsFull,Converter={StaticResource boolTrueVisibleConverter},ConverterParameter=False}">
+                            <TextBlock Text="水印位 X" ToolTip="默认：-1，右下角展示"></TextBlock>
+                            <TextBox Text="{Binding LocationX,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="水印位 Y" ToolTip="默认：-1，右下角展示"></TextBlock>
+                            <TextBox Text="{Binding LocationY,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Visibility="{Binding IsFull,Converter={StaticResource boolTrueVisibleConverter},ConverterParameter=True}">
+                            <TextBlock Text="水印行高" ToolTip="默认：10，越大，水印行间隔越大"></TextBlock>
+                            <TextBox Text="{Binding LineHeight,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="水印间隔" ToolTip="默认：0，越大，水印列间隔越大"></TextBlock>
+                            <TextBox Text="{Binding Space,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="4" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_WaterMarkTextToImg" Text="{Binding OutPath,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="5" HandleText="生成水印" Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="图片水印-图片" Name="WaterMarkImgToImg">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="不支持Gif类型图片" x:Name="DF_WaterMarkImgToImg"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="水印图片" ToolTip="必填"></TextBlock>
+                            <TextBox Text="{Binding WaterFile,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectWaterFileCommand}"></Button>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="水印缩放" ToolTip="默认1，即尺寸不变。0-1之间，越小水印越小"></TextBlock>
+                            <TextBox Text="{Binding Scale,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="透明  度" ToolTip="默认：0.8。0-1之间，越小越透明"></TextBlock>
+                            <TextBox Text="{Binding Opacity,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Visibility="{Binding IsFull,Converter={StaticResource boolTrueVisibleConverter},ConverterParameter=False}">
+                            <TextBlock Text="水印位 X" ToolTip="默认：-1，右下角展示"></TextBlock>
+                            <TextBox Text="{Binding LocationX,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="水印位 Y" ToolTip="默认：-1，右下角展示"></TextBlock>
+                            <TextBox Text="{Binding LocationY,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_WaterMarkImgToImg" Text="{Binding OutPath,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="5" HandleText="生成水印" Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="文字水印-GIF" Name="WaterMarkTextToGif">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="仅支持Gif类型图片" x:Name="DF_WaterMarkTextToGif"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="水印文字"></TextBlock>
+                            <TextBox Text="{Binding Text,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="字体倾斜" ToolTip="默认：-45。向右上角翘"></TextBlock>
+                            <TextBox Text="{Binding Rotate,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="字体颜色" ToolTip="默认黑色。支持颜色名称和16进制#xxxxxx，不支持rgb"></TextBlock>
+                            <TextBox Text="{Binding FontColor,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="字体大小" ToolTip="默认：16。数值大，字体越大"></TextBlock>
+                            <TextBox Text="{Binding FontSize,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Text="是否全屏" ToolTip="默认：否" ></TextBlock>
+                            <CheckBox IsChecked="{Binding IsFull,Mode=TwoWay}" VerticalAlignment="Center" Margin="20 0"></CheckBox>
+                        </StackPanel>
+                        
+                        <Grid Grid.Row="3" Visibility="{Binding IsFull,Converter={StaticResource boolTrueVisibleConverter},ConverterParameter=False}">
+                            <!--非全屏-->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <TextBlock Text="水印缩放" ToolTip="默认：1。0-1之间，越小水印图越小"></TextBlock>
+                                <TextBox Text="{Binding Scale,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                                <TextBlock Text="透明度" ToolTip="默认：0.8。0-1之间，越小越透明，当非全屏且字体倾斜为0时才生效，效果不明显"></TextBlock>
+                                <TextBox Text="{Binding Opacity,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <TextBlock Text="水印位 X" ToolTip="默认：-1，即W-w；W为原图宽，w为小图宽"></TextBlock>
+                                <TextBox Text="{Binding LocationX,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                                <TextBlock Text="水印位 Y" ToolTip="默认：-1，即H-h；W为原图高，h为小图高"></TextBlock>
+                                <TextBox Text="{Binding LocationY,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                <TextBlock Text="字体文件" ToolTip="当非全屏且字体倾斜为0时才生效。C:\Windows\Fonts有很多字体但无法直接使用，将里面的某个字体copy到另一个文件夹即可用，有中文字一定要选中文字体，如宋体、新宋体"></TextBlock>
+                                <TextBox Text="{Binding FontFile,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                                <Button Content="选择位置" Command="{Binding SelectFontFileCommand}"></Button>
+                            </StackPanel>
+                        </Grid>
+                        
+                        <StackPanel Grid.Row="3" Orientation="Horizontal" Visibility="{Binding IsFull,Converter={StaticResource boolTrueVisibleConverter},ConverterParameter=True}">
+                            <TextBlock Text="水印行高" ToolTip="默认：10，越大，水印行间隔越大"></TextBlock>
+                            <TextBox Text="{Binding LineHeight,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="水印间隔" ToolTip="默认：0，越大，水印列间隔越大"></TextBlock>
+                            <TextBox Text="{Binding Space,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_WaterMarkTextToGif" Text="{Binding OutPath,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="5" HandleText="生成水印" Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="图片水印-GIF" Name="WaterMarkImgToGif">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="仅支持Gif类型图片" x:Name="DF_WaterMarkImgToGif"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="水印图片" ToolTip="必填"></TextBlock>
+                            <TextBox Text="{Binding WaterFile,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectWaterFileCommand}"></Button>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="透明度   " ToolTip="默认：0.8。0-1之间，越小越透明"></TextBlock>
+                            <TextBox Text="{Binding Opacity,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="水印倾斜" ToolTip="默认：4，不倾斜。0-4之间：0 逆时针旋转90并垂直反转，1 顺时针旋转90  2 逆时针旋转90  3 顺时针旋转90并垂直翻转"></TextBlock>
+                            <TextBox Text="{Binding Transpose,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Text="水印宽 w" ToolTip="默认-1，即尺寸不变。如自适应高度：w=500,h=-1"></TextBlock>
+                            <TextBox Text="{Binding ScaleX,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="水印高 h" ToolTip="默认-1，即尺寸不变。如自适应宽度：w=-1,h=200"></TextBlock>
+                            <TextBox Text="{Binding ScaleY,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                            <TextBlock Text="水印位 X" ToolTip="默认：-1，右下角展示。W：gif宽度，w：水印宽度，可填计算公式如：W/2,W-w"></TextBlock>
+                            <TextBox Text="{Binding LocationX,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="水印位 Y" ToolTip="默认：-1，右下角展示。H：gif宽度，h：水印宽度，可填计算公式如：H/2,H-h"></TextBlock>
+                            <TextBox Text="{Binding LocationY,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_WaterMarkImgToGif" Text="{Binding OutPath,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="5" HandleText="生成水印" Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="二维码、条形码" Name="CodeImg">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <controls:DragFileControl Grid.Column="0" TipMessage="不支持Gif类型图片，查看二维码信息" x:Name="DF_CodeImg"></controls:DragFileControl>
+                    <Grid Grid.Column="1" Margin="20 0 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Text="中心图片" ToolTip="必填"></TextBlock>
+                            <TextBox Text="{Binding WaterFile,Mode=TwoWay}" IsReadOnly="True"  MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectWaterFileCommand}"></Button>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <TextBlock Text="内容文本" ToolTip="支持链接"></TextBlock>
+                            <TextBox Text="{Binding Text,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="生成数量" ToolTip="默认2"></TextBlock>
+                            <TextBox Text="{Binding Count,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Text="图片宽度" ToolTip="默认：300"></TextBlock>
+                            <TextBox Text="{Binding Width,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                            <TextBlock Text="图片高度" ToolTip="默认：300"></TextBlock>
+                            <TextBox Text="{Binding Height,Mode=TwoWay}" MinWidth="200" Margin="20 0"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                            <TextBlock Text="存储位置" ToolTip="不填写，默认桌面"></TextBlock>
+                            <TextBox Name="Out_CodeImg" Text="{Binding OutPath,Mode=TwoWay}" IsReadOnly="True" MinWidth="200" MaxWidth="280" Margin="20 0"></TextBox>
+                            <Button Content="选择位置" Command="{Binding SelectOutPathCommand}"></Button>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Orientation="Horizontal">
+                            <Button Width="150" Height="30" Content="生成二维码" Command="{Binding CreateCodeCommand}" CommandParameter="QR"></Button>
+                            <Button Width="150" Height="30" Margin="50 0"  Content="生成条形码" ToolTip="不支持中文，最好能手动调接一下宽高" Command="{Binding CreateCodeCommand}" CommandParameter="BAR"></Button>
+                            <Button Width="180" Height="30" Content="生成二维码（带图片）" ToolTip="默认居中，中心图片必填" Command="{Binding CreateCodeCommand}" CommandParameter="QRIMG"></Button>
+                        </StackPanel>
+                        <controls:HandleFileControl Grid.Row="5" HandleText="查看二维码信息"  Message="{Binding Message}" FileResultList="{Binding FileResultList}" BtnHandleFilePreviewMouseDownEvent="Btn_HandleFile_PreviewMouseDown" BtnRemoveResultEvent="Btn_RemoveResult_Event"></controls:HandleFileControl>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
